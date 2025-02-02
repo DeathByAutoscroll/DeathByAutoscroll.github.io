@@ -1,19 +1,15 @@
-/*
-AAO case polish highlighter
-*/
-
-var version = "v1.4";
+/* AAO case polish highlighter */
+var version = "v1.5";
 /*
 Script created by: DeathByAutoscroll.
 Date created: 2nd of January, 2025.
-Last edit that updated this comment: 23:48 on the 14th of January, 2025.
+Last edit that updated this comment: 02:10 on the 2nd of Feburary, 2025.
 */
 
 /* USER OPTIONS */
 
 /* Toolkit */
 var displayEmptyCategories = false; /* Shows all categories, even if there are no results. */
-var groupColour = "color:cornsilk;"; /* The text colour of each category (does not affect results). */
 
 /* Fades */
 var hideZeroDurationFade = false; /* Fades of 0ms won't appear in the results. */
@@ -24,10 +20,10 @@ var ignoreSetSpeaker = true; /* Ignores non auto voices if true */
 
 /* END OF OPTIONS */
 
-function showDoNotTalkBlueText(groupColour) {
+function showDoNotTalkBlueText() {
   var categoryDisplayed = false;
   if (displayEmptyCategories) {
-    console.groupCollapsed("%cDo not talk not set on %cblue text.", groupColour, "color:#6BC7F6");
+    console.groupCollapsed("Do not talk not set on %cblue text.", "color:#6BC7F6");
     categoryDisplayed = true;
   }
   
@@ -40,7 +36,7 @@ function showDoNotTalkBlueText(groupColour) {
       /* No characters in array w/ set speaker. */
       if (!frame.characters[0]) {
         if (!categoryDisplayed) {
-          console.groupCollapsed("%cDo not talk not set on %cblue text.", groupColour, "color:#6BC7F6");
+          console.groupCollapsed("Do not talk not set on %cblue text.", "color:#6BC7F6");
           categoryDisplayed = true;
         }
         console.info("No DNT frame id #" + frame.id + " (no sprite)");
@@ -56,7 +52,7 @@ function showDoNotTalkBlueText(groupColour) {
         } else {
           if (character.sync_mode != SYNC_STILL) { /* Do not talk */
             if (!categoryDisplayed) {
-              console.groupCollapsed("%cDo not talk not set on %cblue text.", groupColour, "color:#6BC7F6");
+              console.groupCollapsed("Do not talk not set on %cblue text.", "color:#6BC7F6");
               categoryDisplayed = true;
             }
             console.info("No DNT frame id #" + frame.id + " (set sprite)");
@@ -71,10 +67,10 @@ function showDoNotTalkBlueText(groupColour) {
 
 }
 
-function showDoNotTalkPuntuation(groupColour) {
+function showDoNotTalkPuntuation() {
   var categoryDisplayed = false;
   if (displayEmptyCategories) {
-    console.groupCollapsed("%cDo not talk not set with no words.", groupColour);
+    console.groupCollapsed("Do not talk not set with no words.");
     categoryDisplayed = true;
   }
   
@@ -92,7 +88,7 @@ function showDoNotTalkPuntuation(groupColour) {
         /* No characters in array w/ set speaker. */
         if (!frame.characters[0]) {
             if (!categoryDisplayed) {
-              console.groupCollapsed("%cDo not talk not set with no words.", groupColour);
+              console.groupCollapsed("Do not talk not set with no words.");
               categoryDisplayed = true;
             }
           console.info("No DNT frame id #" + frame.id + " (no sprite)");
@@ -108,7 +104,7 @@ function showDoNotTalkPuntuation(groupColour) {
           } else {
             if (character.sync_mode != SYNC_STILL) { /* Do not talk */
               if (!categoryDisplayed) {
-                console.groupCollapsed("%cDo not talk not set with no words.", groupColour);
+                console.groupCollapsed("Do not talk not set with no words.");
                 categoryDisplayed = true;
               }
               console.info("No DNT frame id #" + frame.id + " (set sprite)");
@@ -123,10 +119,10 @@ function showDoNotTalkPuntuation(groupColour) {
   }
 }
 
-function showDisappearOnFade(groupColour, hideZeroDurationFade) {
+function showDisappearOnFade(hideZeroDurationFade) {
   var categoryDisplayed = false;
   if (displayEmptyCategories) {
-    console.groupCollapsed("%c\"Hide previous characters\" set during fadeout.", groupColour);
+    console.groupCollapsed("\"Hide previous characters\" set during fadeout.");
     categoryDisplayed = true;
   }
   
@@ -149,7 +145,7 @@ function showDisappearOnFade(groupColour, hideZeroDurationFade) {
 
     /* Display category on results */
     if (!categoryDisplayed) {
-      console.groupCollapsed("%c\"Hide previous characters\" set during fadeout.", groupColour);
+      console.groupCollapsed("\"Hide previous characters\" set during fadeout.");
       categoryDisplayed = true;
     }
      console.info("CDDFo frame id #" + frame.id);
@@ -159,10 +155,10 @@ function showDisappearOnFade(groupColour, hideZeroDurationFade) {
   }
 }
 
-function frameAfterMergedFrame(groupColour, mergeProfileIdFilter, ignoreSetSpeaker) { /* Default to None ID */
+function frameAfterMergedFrame(mergeProfileIdFilter, ignoreSetSpeaker) {
   var categoryDisplayed = false;
   if (displayEmptyCategories) {
-    console.groupCollapsed("%cMismatched speakers across merged frames", groupColour);
+    console.groupCollapsed("Mismatched speakers across merged frames");
     categoryDisplayed = true;
   }
   
@@ -171,15 +167,19 @@ function frameAfterMergedFrame(groupColour, mergeProfileIdFilter, ignoreSetSpeak
     var currFrame = trial_data.frames[frameIndex];
     var nextFrame = trial_data.frames[frameIndex + 1];
 
-
-
     if (currFrame.merged_to_next == false) {
       continue;
     }
     
-    /* If the same speaker, ignore it. */
-    if (currFrame.speaker_id == nextFrame.speaker_id && currFrame.speaker_name == nextFrame.speaker_name) {
-      continue;
+    /* If the same speaker and speakername, ignore it. */
+    if (currFrame.speaker_id == nextFrame.speaker_id) {
+      
+      var currName = getSpeakersDisplayedName(currFrame);
+      var nextName = getSpeakersDisplayedName(nextFrame);
+
+      if (currName == nextName) {
+        continue;
+      }
     }
 
     /* OPTIONAL - If voice specifically set to not auto, ignore it. */
@@ -189,18 +189,13 @@ function frameAfterMergedFrame(groupColour, mergeProfileIdFilter, ignoreSetSpeak
 
     /* Display category for results. */
     if (!categoryDisplayed) {
-      console.groupCollapsed("%cMismatched speakers across merged frames", groupColour);
+      console.groupCollapsed("Mismatched speakers across merged frames");
       categoryDisplayed = true;
     }
 
     /* Search all. */
     if (mergeProfileIdFilter == 0) {
-      if (nextFrame.speaker_id < 0) { /* Default profile */
-        console.info(`Default speaker after named merged frame id #${currFrame.id} (#${nextFrame.id})`);
-      } 
-      else {
-        console.info(`Named speaker after named merged frame id #${currFrame.id} (#${nextFrame.id})`);
-      }
+      console.info(`Different speaker ID and/or name after merged frame id #${currFrame.id} (#${nextFrame.id})`);
     }
     /* Search specific */
     else {
@@ -214,10 +209,23 @@ function frameAfterMergedFrame(groupColour, mergeProfileIdFilter, ignoreSetSpeak
   }
 }
 
-function showSyncTextTyping(groupColour) {
+function getSpeakersDisplayedName(frame) {
+  if (frame.speaker_use_name) {
+    return frame.speaker_name;
+  } 
+
+  for (let profileIndex = 1; profileIndex < trial_data.profiles.length; profileIndex++) {
+    if (trial_data.profiles[profileIndex].id == frame.speaker_id) {
+      return trial_data.profiles[profileIndex].short_name;
+    }
+  }
+  
+}
+
+function showSyncTextTyping() {
   var categoryDisplayed = false;
   if (displayEmptyCategories) {
-    console.groupCollapsed("%cSync with text typing enabled.", groupColour);
+    console.groupCollapsed("Sync with text typing enabled.");
     categoryDisplayed = true;
   }
   
@@ -241,7 +249,7 @@ function showSyncTextTyping(groupColour) {
         } else {
           if (character.sync_mode == SYNC_SYNC) { /* Sync */
             if (!categoryDisplayed) {
-              console.groupCollapsed("%cSync with text typing enabled.", groupColour);
+              console.groupCollapsed("Sync with text typing enabled.");
               categoryDisplayed = true;
             }
             console.info("Sync mode enabled #" + frame.id);
@@ -255,10 +263,10 @@ function showSyncTextTyping(groupColour) {
   }
 }
 
-function showTooShortTextTimer(groupColour) {
+function showTooShortTextTimer() {
   let categoryDisplayed = false;
   if (displayEmptyCategories) {
-    console.groupCollapsed("%cTimed frame too short for text (TODO: Factor in tags).", groupColour);
+    console.groupCollapsed("Timed frame too short for text (TODO: Factor in tags).");
     categoryDisplayed = true;
   }
   
@@ -289,7 +297,7 @@ function showTooShortTextTimer(groupColour) {
     }
 
     if (!categoryDisplayed) {
-        console.groupCollapsed("%cTimed frame too short for text (TODO: Factor in tags).", groupColour);
+        console.groupCollapsed("Timed frame too short for text (TODO: Factor in tags).");
         categoryDisplayed = true;
       }
       console.info(`Text time longer than "Wait for..." time. Frame #${frame.id} (${textTime} > ${frame.wait_time}).`);
@@ -299,10 +307,10 @@ function showTooShortTextTimer(groupColour) {
   }
 }
 
-function showTooShortFrameFadeTimer(groupColour) {
+function showTooShortFrameFadeTimer() {
   let categoryDisplayed = false;
   if (displayEmptyCategories) {
-    console.groupCollapsed("%cTimed frame too short for fade.", groupColour);
+    console.groupCollapsed("Timed frame too short for fade.");
     categoryDisplayed = true;
   }
   
@@ -320,7 +328,7 @@ function showTooShortFrameFadeTimer(groupColour) {
     }
 
     if (!categoryDisplayed) {
-        console.groupCollapsed("%cTimed frame too short for fade.", groupColour);
+        console.groupCollapsed("Timed frame too short for fade.");
         categoryDisplayed = true;
       }
       console.info(`Fade time longer than "Wait for..." time. Frame #${frame.id} (${frame.fade.fade_duration} > ${frame.wait_time}).`);
@@ -330,14 +338,14 @@ function showTooShortFrameFadeTimer(groupColour) {
   }
 }
 
-/* FUNCTIONS */
+/* FUNCTION CALLS */
 console.group(`%cAAO case polish toolkit output ${version}`, "color:aqua;font-size:14px;");
-showDoNotTalkBlueText(groupColour);
-showDoNotTalkPuntuation(groupColour);
-showDisappearOnFade(groupColour, hideZeroDurationFade);
-frameAfterMergedFrame(groupColour, mergeProfileIdFilter, ignoreSetSpeaker);
-showSyncTextTyping(groupColour);
-showTooShortTextTimer(groupColour);
-showTooShortFrameFadeTimer(groupColour);
+showDoNotTalkBlueText();
+showDoNotTalkPuntuation();
+showDisappearOnFade(hideZeroDurationFade);
+frameAfterMergedFrame(mergeProfileIdFilter, ignoreSetSpeaker);
+showSyncTextTyping();
+/* showTooShortTextTimer(); */
+showTooShortFrameFadeTimer();
 
 console.groupEnd();
