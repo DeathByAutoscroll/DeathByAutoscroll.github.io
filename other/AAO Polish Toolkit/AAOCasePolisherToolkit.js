@@ -1,4 +1,4 @@
-/* AAO case polish highlighter */
+/* The Unofficial Case Analysis Toolkit */
 var version = "v1.6";
 /*
 Script created by: DeathByAutoscroll.
@@ -535,7 +535,7 @@ function showBadUnchangedActionDefaults() { /* NOT TESTED YET */
 }
 
 /* FUNCTION CALLS */
-console.group(`%cAAO case polish toolkit output ${version}`, "color:aqua;font-size:14px;");
+console.group(`%cThe Unofficial Case Analysis Toolkit ${version}`, "color:aqua;font-size:14px;");
 showDoNotTalkBlueText();
 showDoNotTalkPuntuation();
 showDisappearOnFade(hideZeroDurationFade);
